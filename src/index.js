@@ -30,7 +30,7 @@ function setupGenesysClients() {
 
   // Configure and Authenticate Platform Client
   client.setPersistSettings(true, appName);
-  client.setEnvironment(transcriptApp.gcEnvironment);
+  client.setEnvironment(targetEnv);
 
   return client.loginPKCEGrant(clientId, redirectUri)
     .then(data =>
