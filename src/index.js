@@ -25,8 +25,11 @@ function setupGenesysClients() {
 
   // Configure Client App
   let transcriptApp = new ClientApp({
-    pcEnvironment: environment
+    gcHostOriginQueryParam: 'gcHostOrigin',
+    gcTargetEnvQueryParam: 'gcTargetEnv'
   });
+
+  environment = transcriptApp.gcEnvironment;
 
   // Configure and Authenticate Platform Client
   client.setPersistSettings(true, appName);
