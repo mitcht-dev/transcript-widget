@@ -15,15 +15,15 @@ function setupGenesysClients() {
 
   const urlParams = new URLSearchParams(window.location.search);
   
-  let environment = 'usw2.pure.cloud';
+  let targetEnv = '';
   let hostOrigin = '';
 
   // 1. Persist Target Environment
   if (urlParams.has('gcTargetEnv')) {
-    environment = urlParams.get('gcTargetEnv');
-    sessionStorage.setItem('gc_environment', environment);
+    targetEnv = urlParams.get('gcTargetEnv');
+    sessionStorage.setItem('gc_target_env', targetEnv);
   } else {
-    environment = sessionStorage.getItem('gc_environment') || environment;
+    targetEnv = sessionStorage.getItem('gc_target_env') || targetEnv;
   }
 
   // 2. Persist Host Origin
@@ -38,7 +38,7 @@ function setupGenesysClients() {
   // If we are returning from auth, put the params back in the URL so ClientApp can find them.
   if (!urlParams.has('gcHostOrigin') && hostOrigin) {
     const newUrl = new URL(window.location.href);
-    newUrl.searchParams.set('gcTargetEnv', environment);
+    newUrl.searchParams.set('gcTargetEnv', targetEnv);
     newUrl.searchParams.set('gcHostOrigin', hostOrigin);
     window.history.replaceState(null, '', newUrl.toString());
   }
@@ -55,13 +55,13 @@ function setupGenesysClients() {
 
   return client.loginPKCEGrant(clientId, redirectUri)
     .then(data => {
-      console.log('Authentication Successful!', data);
+      console.log('TESTING Authentication Successful!', data);
       
       // Pro-Tip: Clean the auth code out of the URL. 
       // If a user refreshes the page later, the SDK will try to reuse the expired code and fail.
       window.history.replaceState(null, '', redirectUri);
     })
-    .catch(err => console.error('Authentication Failed:', err));
+    .catch(err => console.error('TESTING Authentication Failed:', err));
 }
 
 function initializeWidget() {
