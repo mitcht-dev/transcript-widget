@@ -5,9 +5,6 @@ const clientId = "85c16c77-dca7-4d60-b67a-6f09658aa043";
 const redirectUri = 'https://mitcht-dev.github.io/transcription-widget/';
 
 const appName = 'Transcript App';
-const qParamLanguage = 'gcLangTag';
-const qParamHostOrigin = 'gcHostOrigin';
-const qParamConversationId = 'gcConversationId';
 
 // Default values are assigned but values should 
 // be set on the function 'assignConfiguration'
@@ -27,10 +24,7 @@ function setupGenesysClients() {
     gcTargetEnvQueryParam: 'gcTargetEnv'
   });
 
-  console.log('TESTING', environment);
-
   environment = transcriptApp.gcEnvironment;
-  console.log('TESTING', environment);
 
   // Configure and Authenticate Platform Client
   client.setPersistSettings(true, appName);
@@ -38,7 +32,7 @@ function setupGenesysClients() {
 
   return client.loginPKCEGrant(clientId, redirectUri)
     .then(data => 
-      console.log('Success message!: ', qParamConversationId)
+      console.log('Success message!')
     )
     .catch(err => console.error('Authentication Failed:', err));
 }
