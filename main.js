@@ -1,9 +1,5 @@
-import platformClientModule from 'platformClient';
-import ClientAppModule from 'clientAppSdk';
-
-// Safely unwrap the CJS-to-ESM payload
-const platformClient = platformClientModule.default || platformClientModule;
-const ClientApp = ClientAppModule.default || ClientAppModule;
+const platformClient = window.require('platformClient');
+const ClientApp = window.purecloud.apps.ClientApp;
 
 const clientId = "85c16c77-dca7-4d60-b67a-6f09658aa043";
 const redirectUri = 'https://mitcht-dev.github.io/transcription-widget/';
