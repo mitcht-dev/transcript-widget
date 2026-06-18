@@ -1,12 +1,11 @@
 import platformClient from 'platformClient';
 
-const clientId = '4908b012-a9f6-45e2-92bd-4171de2fbef7';
+const clientId = "85c16c77-dca7-4d60-b67a-6f09658aa043";
 const redirectUri = 'https://mitcht-dev.github.io/transcription-widget/';
 
 const appName = 'transcriptApp';
 const qParamLanguage = 'language';
 const qParamEnvironment = 'environment';
-
 const qParamConversationId = 'gcConversationId';
 
 // Default values are assigned but values should 
@@ -30,22 +29,27 @@ function setupGenesysClients() {
     pcEnvironment: environment
   });
 
-
   // Configure and Authenticate Platform Client
   client.setPersistSettings(true, appName);
   client.setEnvironment(environment);
 
-  return client.loginImplicitGrant(clientId, redirectUri)
+<<<<<<< HEAD
+  // Use loginPKCEGrant! The SDK handles the verifier, challenge, and code automatically.
+  return client.loginPKCEGrant(clientId, redirectUri)
+    .then(() => usersApi.getUsersMe())
+=======
+  return client.authorizePKCEGrant(clientId, codeVerifier, authCode, redirectUri)
     .then(data => usersApi.getUsersMe())
+>>>>>>> cf8f0c7 (stop ignoring nodes)
     .then(data => {
       userDetails = data;
 
       transcriptApp.alerting.showToastPopup(
         `Hi ${userDetails.name}`,
-        'Never gonna give you up, never gonna let you down 😊');
+        'Never gonna give you up, never gonna let you down 😊'
+      );
     })
-    .catch(err => console.log(err));
-
+    .catch(err => console.error('Authentication Failed:', err));
 }
 
 /**
@@ -74,10 +78,9 @@ function assignConfiguration() {
   }
 
   if (searchParams.has(qParamConversationId)) {
-    conversationId = searchParams.get(qParamConversationId)
+    conversationId = searchParams.get(qParamConversationId);
   }
 }
-
 
 // After page loads...
 window.addEventListener('load', (event) => {
@@ -88,6 +91,16 @@ window.addEventListener('load', (event) => {
   setupGenesysClients()
     .then(() => {
       // Display values to the page
+<<<<<<< HEAD
+      if(userDetails) {
+        document.getElementById('span_environment').innerText = environment;
+        document.getElementById('span_language').innerText = language;
+        document.getElementById('span_name').innerText = userDetails.name;
+        console.log('Finished setup.');
+      }
+    });
+});
+=======
       document.getElementById('span_environment').innerText = environment;
       document.getElementById('span_language').innerText = language;
       document.getElementById('span_name').innerText = userDetails.name;
@@ -95,18 +108,4 @@ window.addEventListener('load', (event) => {
       console.log('Finished setup.');
     })
 });
-
-console.log('PLEASE WORK');
-assignConfiguration();
-console.log(`environment: ${environment}`);
-console.log(`language: ${language}`);
-
-setupGenesysClients()
-  .then(() => {
-    // Display values to the page
-    document.getElementById('span_environment').innerText = environment;
-    document.getElementById('span_language').innerText = language;
-    document.getElementById('span_name').innerText = userDetails.name;
-
-    console.log('Finished setup.');
-  })
+>>>>>>> cf8f0c7 (stop ignoring nodes)
