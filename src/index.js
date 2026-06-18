@@ -33,7 +33,7 @@ function setupGenesysClients() {
 
   // Configure and Authenticate Platform Client
   client.setPersistSettings(true, appName);
-  client.setEnvironment(environment);
+  client.setEnvironment('usw2.pure.cloud');
 
   return client.loginPKCEGrant(clientId, redirectUri)
     .then(data =>
