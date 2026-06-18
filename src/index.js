@@ -3,7 +3,6 @@ import ClientApp from 'purecloud-client-app-sdk';
 
 const clientId = "85c16c77-dca7-4d60-b67a-6f09658aa043";
 const redirectUri = 'https://mitcht-dev.github.io/transcription-widget/';
-let environment = 'usw2.pure.cloud';
 
 const appName = 'Transcript Widget';
 
@@ -14,16 +13,16 @@ function setupGenesysClients() {
   const client = platformClient.ApiClient.instance;
   const usersApi = new platformClient.UsersApi();
 
+  let environment = 'usw2.pure.cloud';
+
   const urlParams = new URLSearchParams(window.location.search);
-  let targetEnv = urlParams.get('gcTargetEnv');
 
-  if (targetEnv) {
-    sessionStorage.setItem('gc_environment', targetEnv);
+  if (urlParams.has('gcTargetEnv')) {
+    environment = urlParams.get('gcTargetEnv');
+    sessionStorage.setItem('gc_environment', environment);
   } else {
-    targetEnv = sessionStorage.getItem('gc_environment') || 'usw2.pure.cloud';
+    environment = sessionStorage.getItem('gc_environment') || environment;
   }
-
-  environment = targetEnv;
 
   // Configure Client App
   let transcriptApp = new ClientApp({
@@ -33,7 +32,7 @@ function setupGenesysClients() {
 
   // Configure and Authenticate Platform Client
   client.setPersistSettings(true, appName);
-  client.setEnvironment('usw2.pure.cloud');
+  client.setEnvironment(environment);
 
   return client.loginPKCEGrant(clientId, redirectUri)
     .then(data =>
