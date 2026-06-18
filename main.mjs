@@ -1,8 +1,6 @@
 import platformClient from 'purecloud-platform-client-v2';
 import ClientApp from 'purecloud-client-app-sdk';
 
-console.log('DID THIS WORK');
-
 const clientId = "85c16c77-dca7-4d60-b67a-6f09658aa043";
 const redirectUri = 'https://mitcht-dev.github.io/transcription-widget/';
 
