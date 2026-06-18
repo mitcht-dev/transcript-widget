@@ -14,7 +14,7 @@ function setupGenesysClients() {
   const usersApi = new platformClient.UsersApi();
 
   const urlParams = new URLSearchParams(window.location.search);
-  
+
   let targetEnv = '';
   let hostOrigin = '';
 
@@ -53,17 +53,18 @@ function setupGenesysClients() {
   client.setPersistSettings(true, appName);
   client.setEnvironment('usw2.pure.cloud');
 
-  debugger;
-
   return client.loginPKCEGrant(clientId, redirectUri)
     .then(data => {
       console.log('TESTING Authentication Successful!', data);
-      
+
       // Pro-Tip: Clean the auth code out of the URL. 
       // If a user refreshes the page later, the SDK will try to reuse the expired code and fail.
       window.history.replaceState(null, '', redirectUri);
     })
-    .catch(err => console.log('TESTING Authentication Failed:', err));
+    .catch(err => {
+      debugger;
+      console.log('TESTING Authentication Failed:', err);
+    });
 }
 
 function initializeWidget() {
