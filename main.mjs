@@ -95,3 +95,18 @@ window.addEventListener('load', (event) => {
       console.log('Finished setup.');
     })
 });
+
+console.log('PLEASE WORK');
+assignConfiguration();
+console.log(`environment: ${environment}`);
+console.log(`language: ${language}`);
+
+setupGenesysClients()
+  .then(() => {
+    // Display values to the page
+    document.getElementById('span_environment').innerText = environment;
+    document.getElementById('span_language').innerText = language;
+    document.getElementById('span_name').innerText = userDetails.name;
+
+    console.log('Finished setup.');
+  })
