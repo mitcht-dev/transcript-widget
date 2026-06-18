@@ -12,4 +12,9 @@ export default {
     filename: 'index.js',
     path: path.resolve(__dirname, 'dist'), 
   },
+  resolve: {
+    alias: {
+      'purecloud-platform-client-v2': path.resolve(__dirname, 'node_modules/purecloud-platform-client-v2/src/purecloud-platform-client-v2')
+    }
+  }
 };
