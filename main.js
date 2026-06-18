@@ -1,5 +1,9 @@
-import { ApiClient, usersApi } from 'platformClient';
-import ClientApp from 'clientAppSdk';
+import platformClientModule from 'platformClient';
+import ClientAppModule from 'clientAppSdk';
+
+// Safely unwrap the converted ESM bundle
+const platformClient = platformClientModule.default || platformClientModule;
+const ClientApp = ClientAppModule.default || ClientAppModule;
 
 const clientId = "85c16c77-dca7-4d60-b67a-6f09658aa043";
 const redirectUri = 'https://mitcht-dev.github.io/transcription-widget/';
@@ -21,8 +25,8 @@ let conversationId = null;
  * Configure both the Platform SDK and the Client App SDK
  */
 function setupGenesysClients() {
-  const client = ApiClient.instance;
-  const usersApi = new UsersApi();
+  const client = platformClient.ApiClient.instance;
+  const usersApi = new platformClient.UsersApi();
 
   // Configure Client App
   let transcriptApp = new ClientApp({
