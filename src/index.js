@@ -15,8 +15,6 @@ if (targetEnv) {
   targetEnv = sessionStorage.getItem('gc_environment') || 'usw2.pure.cloud';
 }
 
-let environment = targetEnv;
-
 /**
  * Configure both the Platform SDK and the Client App SDK
  */
@@ -32,7 +30,7 @@ function setupGenesysClients() {
 
   // Configure and Authenticate Platform Client
   client.setPersistSettings(true, appName);
-  client.setEnvironment(environment);
+  client.setEnvironment(transcriptApp.gcEnvironment);
 
   return client.loginPKCEGrant(clientId, redirectUri)
     .then(data =>
