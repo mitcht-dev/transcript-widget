@@ -42,8 +42,6 @@ function setupGenesysClients() {
 function initializeWidget() {
   console.log("Widget script is running...");
 
-  console.log(`environment: ${environment}`);
-
   setupGenesysClients()
     .then(() => {
 
