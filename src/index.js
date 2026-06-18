@@ -13,12 +13,41 @@ function setupGenesysClients() {
   const client = platformClient.ApiClient.instance;
   const usersApi = new platformClient.UsersApi();
 
+  const urlParams = new URLSearchParams(window.location.search);
+  
+  let environment = 'usw2.pure.cloud';
+  let hostOrigin = '';
+
+  // 1. Persist Target Environment
+  if (urlParams.has('gcTargetEnv')) {
+    environment = urlParams.get('gcTargetEnv');
+    sessionStorage.setItem('gc_environment', environment);
+  } else {
+    environment = sessionStorage.getItem('gc_environment') || environment;
+  }
+
+  // 2. Persist Host Origin
+  if (urlParams.has('gcHostOrigin')) {
+    hostOrigin = urlParams.get('gcHostOrigin');
+    sessionStorage.setItem('gc_host_origin', hostOrigin);
+  } else {
+    hostOrigin = sessionStorage.getItem('gc_host_origin');
+  }
+
+  // 3. The Magic Trick: Reconstruct the URL for the Client App SDK
+  // If we are returning from auth, put the params back in the URL so ClientApp can find them.
+  if (!urlParams.has('gcHostOrigin') && hostOrigin) {
+    const newUrl = new URL(window.location.href);
+    newUrl.searchParams.set('gcTargetEnv', environment);
+    newUrl.searchParams.set('gcHostOrigin', hostOrigin);
+    window.history.replaceState(null, '', newUrl.toString());
+  }
+
   // 4. Configure Client App
   let transcriptApp = new ClientApp({
     gcHostOriginQueryParam: 'gcHostOrigin',
     gcTargetEnvQueryParam: 'gcTargetEnv'
   });
-  console.log(`TESTING ${transcriptApp.gcEnvironment}`);
 
   // 5. Configure and Authenticate Platform Client
   client.setPersistSettings(true, appName);
@@ -27,6 +56,10 @@ function setupGenesysClients() {
   return client.loginPKCEGrant(clientId, redirectUri)
     .then(data => {
       console.log('Authentication Successful!', data);
+      
+      // Pro-Tip: Clean the auth code out of the URL. 
+      // If a user refreshes the page later, the SDK will try to reuse the expired code and fail.
+      window.history.replaceState(null, '', redirectUri);
     })
     .catch(err => console.error('Authentication Failed:', err));
 }
