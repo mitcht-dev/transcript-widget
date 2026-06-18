@@ -1,4 +1,5 @@
-const platformClient = require('platformClient');
+import platformClient from 'platformClient';
+import ClientApp from 'clientAppSdk';
 
 const clientId = "85c16c77-dca7-4d60-b67a-6f09658aa043";
 const redirectUri = 'https://mitcht-dev.github.io/transcription-widget/';
@@ -24,7 +25,6 @@ function setupGenesysClients() {
   const usersApi = new platformClient.UsersApi();
 
   // Configure Client App
-  let ClientApp = window.purecloud.apps.ClientApp;
   let transcriptApp = new ClientApp({
     pcEnvironment: environment
   });
