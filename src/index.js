@@ -70,7 +70,8 @@ function initializeWidget() {
   setupGenesysClients()
     .then(() => {
 
-    });
+    })
+    .catch(err => console.error(`TESTING ${err}`));
 }
 
 if (document.readyState === 'loading') {
