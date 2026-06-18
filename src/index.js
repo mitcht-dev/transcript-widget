@@ -29,7 +29,10 @@ function setupGenesysClients() {
     gcTargetEnvQueryParam: 'gcTargetEnv'
   });
 
+  console.log('TESTING', environment);
+
   environment = transcriptApp.gcEnvironment;
+  console.log('TESTING', environment);
 
   // Configure and Authenticate Platform Client
   client.setPersistSettings(true, appName);
