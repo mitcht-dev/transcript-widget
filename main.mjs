@@ -1,3 +1,4 @@
+import platformClient from 'platformClient';
 
 const clientId = '4908b012-a9f6-45e2-92bd-4171de2fbef7';
 const redirectUri = 'https://mitcht-dev.github.io/transcription-widget/';
@@ -20,7 +21,6 @@ let conversationId = null;
  * Configure both the Platform SDK and the Client App SDK
  */
 function setupGenesysClients() {
-  const platformClient = await import('platformClient');
   const client = platformClient.ApiClient.instance;
   const usersApi = new platformClient.UsersApi();
 
