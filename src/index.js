@@ -43,44 +43,8 @@ function setupGenesysClients() {
     .catch(err => console.error('Authentication Failed:', err));
 }
 
-/**
- * Assign the language and environment for the app first through
- * the query parameters. But if non-existent, attempt to get
- * it from localStorage. If none, use default values.
- */
-function assignConfiguration() {
-  let url = new URL(window.location);
-  let searchParams = new URLSearchParams(url.search);
-
-  if (searchParams.has(qParamLanguage)) {
-    language = searchParams.get(qParamLanguage);
-    localStorage.setItem(`${appName}_language`, language);
-  } else {
-    let local_lang = localStorage.getItem(`${appName}_language`);
-    if (local_lang) language = local_lang;
-  }
-
-  if (searchParams.has(qParamHostOrigin)) {
-    let hostOrigin = searchParams.get(qParamHostOrigin);
-    
-    try {
-      let originUrl = new URL(hostOrigin);
-      
-      environment = originUrl.hostname.replace(/^apps?\./i, '');
-      
-      localStorage.setItem(`${appName}_environment`, environment);
-    } catch (e) {
-      console.error('Could not parse host origin:', e);
-    }
-  } else {
-    let local_env = localStorage.getItem(`${appName}_environment`);
-    if (local_env) environment = local_env;
-  }
-}
-
 function initializeWidget() {
   console.log("Widget script is running...");
-  assignConfiguration();
   
   console.log(`environment: ${environment}`);
   console.log(`language: ${language}`);
