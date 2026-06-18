@@ -1,4 +1,4 @@
-import platformClient from 'platformClient';
+import { ApiClient, usersApi } from 'platformClient';
 import ClientApp from 'clientAppSdk';
 
 const clientId = "85c16c77-dca7-4d60-b67a-6f09658aa043";
@@ -21,8 +21,8 @@ let conversationId = null;
  * Configure both the Platform SDK and the Client App SDK
  */
 function setupGenesysClients() {
-  const client = platformClient.ApiClient.instance;
-  const usersApi = new platformClient.UsersApi();
+  const client = ApiClient.instance;
+  const usersApi = new UsersApi();
 
   // Configure Client App
   let transcriptApp = new ClientApp({
