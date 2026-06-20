@@ -4,7 +4,7 @@ import ClientApp from 'purecloud-client-app-sdk';
 const qConversationIdQueryParam = 'gcConversationId';
 
 const clientId = '85c16c77-dca7-4d60-b67a-6f09658aa043';
-const redirectUri = '';
+const redirectUri = 'https://mitcht-dev.github.io/transcript-widget/';
 const environment = 'usw2.pure.cloud';
 const TOKEN_KEY = 'genesys_transcript_tkn';
 console.log('TESTING: redirectUri: ', redirectUri);
@@ -174,7 +174,7 @@ try {
         const subscriptionTopic = `v2.conversations.${conversationId}.transcription`;
         let topic = [{ id: subscriptionTopic }];
 
-        notificationsInstance.putNotificationsChannelSubscriptions(channelId, body)
+        notificationsInstance.putNotificationsChannelSubscriptions(channelId, topic)
           .then((data) => {
             console.log(`TESTING: putNotificationsChannelSubscriptions success! data: ${JSON.stringify(data, null, 2)}`);
           })
