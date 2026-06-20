@@ -2,8 +2,9 @@ import platformClient from 'purecloud-platform-client-v2';
 import ClientApp from 'purecloud-client-app-sdk';
 
 const clientId = '85c16c77-dca7-4d60-b67a-6f09658aa043';
-const redirectUri = new URL('auth.html', window.location.href).href;
+const redirectUri = '';
 const environment = 'usw2.pure.cloud';
+const TOKEN_KEY = 'genesys_transcript_tkn';
 console.log('TESTING: redirectUri: ', redirectUri);
 
 console.log("TESTING: Script loaded and imports executed.");
@@ -23,6 +24,30 @@ try {
   let pkceVerifier = null;
 
   async function init() {
+    const savedToken = sessionStorage.getItem(TOKEN_KEY);
+
+    if (savedToken) {
+      document.getElementById('status').innerText = "Validating session...";
+
+      client.setAccessToken(savedToken);
+      const usersApi = new platformClient.UsersApi();
+
+      try {
+        await usersApi.getUsersMe();
+
+        console.log("Found valid existing token. Skipping login popup.");
+
+        document.getElementById('loginBtn').style.display = 'none';
+
+        runAppLogic();
+        return;
+
+      } catch (error) {
+        console.warn("Saved token was expired or invalid. Requiring new login.");
+        sessionStorage.removeItem(TOKEN_KEY);
+      }
+    }
+
     document.getElementById('loginBtn').addEventListener('click', handleLoginClick);
   }
 
@@ -89,6 +114,8 @@ try {
 
       if (data.access_token) {
         pkceVerifier = null;
+
+        sessionStorage.setItem(TOKEN_KEY, data.access_token);
 
         client.setAccessToken(data.access_token);
 
