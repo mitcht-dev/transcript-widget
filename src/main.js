@@ -4,18 +4,19 @@ import ClientApp from 'purecloud-client-app-sdk';
 const clientId = '85c16c77-dca7-4d60-b67a-6f09658aa043';
 const redirectUri = window.location.origin + '/auth.html';
 const environment = 'usw2.pure.cloud';
+console.log('TESTING: redirectUri: ', redirectUri);
 
-console.log("TESTING: Step 1 - Script loaded and imports executed.");
+console.log("TESTING: Script loaded and imports executed.");
 
 try {
   const client = platformClient.ApiClient.instance;
-  console.log("TESTING: Step 2 - platformClient instantiated successfully.");
+  console.log("TESTING: platformClient instantiated successfully.");
 
   const transcriptApp = new ClientApp({
     gcHostOriginQueryParam: 'gcHostOrigin',
     gcTargetEnvQueryParam: 'gcTargetEnv',
   });
-  console.log("TESTING: Step 3 - ClientApp instantiated successfully.");
+  console.log("TESTING: ClientApp instantiated successfully.");
 
   client.setEnvironment(environment);
 
@@ -26,6 +27,7 @@ try {
   }
 
   async function handleLoginClick() {
+    console.log('TESTING: handleLoginClick started');
     document.getElementById('status').innerText = "Opening secure login window...";
 
     const popupWidth = 500;
@@ -51,6 +53,7 @@ try {
   }
 
   async function authListener(event) {
+    console.log('TESTING: authListener started');
     if (event.origin !== window.location.origin) return;
 
     if (event.data.type === 'oauth_code') {
@@ -62,6 +65,7 @@ try {
   }
 
   async function exchangeCodeForToken(authCode) {
+    console.log('TESTING: exchangeCodeForToken started');
     if (!pkceVerifier) {
       document.getElementById('status').innerText = "Error: Verifier lost.";
       return;
@@ -103,6 +107,7 @@ try {
 
   // --- STEP 4: Start doing Genesys things ---
   async function runAppLogic() {
+    console.log('TESTING: runAppLogic started');
     const usersApi = new platformClient.UsersApi();
 
     try {
