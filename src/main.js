@@ -22,6 +22,8 @@ if (urlParams.has(qConversationIdQueryParam)) {
 }
 console.log('TESTING: Conversation ID: ', conversationId);
 
+let pingInterval;
+
 try {
   const client = platformClient.ApiClient.instance;
   console.log("TESTING: platformClient instantiated successfully.");
@@ -187,6 +189,40 @@ try {
         console.log('TESTING: There was a failure calling postNotificationsChannels');
         console.error(err);
       });
+  }
+
+  function onWebsocketOpen() {
+    console.log("TESTING: Websocket connected");
+    pingInterval = setInterval(() => {
+      websocket.send({ "message": "ping" });
+    }, 1000);
+  }
+
+  function onWebsocketMessage(e) {
+    const message = extractTranscripts(e.data);
+    if (message) {
+      console.log(`TESTING: Websocket message ${message}`);
+    }
+  }
+
+  function onWebsocketError(e) {
+    console.log(`TESTING: Websocket error ${e}`);
+  }
+
+  function onWebsocketClose() {
+    console.log(`TESTING: Websocket closed`);
+    pingInterval.clear();
+  }
+
+  function extractTranscripts(data) {
+    let message;
+    try {
+      message = JSON.parse(data)?.eventBody;
+    } catch {
+      message = data?.eventBody;
+    }
+    return message?.transcripts?.flatMap(t => `${t.channel}: ${t.alternatives[0].transcript}`)
+      .join('\n');
   }
 
   init();

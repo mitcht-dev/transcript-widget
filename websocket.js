@@ -25,13 +25,3 @@ websocket.addEventListener("close", () => {
     clearInterval(pingInterval);
 });
 
-function extractTranscripts(data) {
-    let message;
-    try {
-        message = JSON.parse(data)?.eventBody;
-    } catch {
-        message = data?.eventBody;
-    }
-    return message?.transcripts?.flatMap(t => `${t.channel}: ${t.alternatives[0].transcript}`)
-        .join('\n');
-}
