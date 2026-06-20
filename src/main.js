@@ -11,10 +11,10 @@ console.log("TESTING: Script loaded and imports executed.");
 
 let conversationId = null;
 
-const urlParams = new URLSearchParams(window.location.search);
+if (!(conversationId = sessionStorage.getItem('conversationId'))) {
+  conversationId = new URLSearchParams(window.location.search).getItem('gcConversationId');
+  sessionStorage.setItem('conversationId', conversationId);
 
-if (urlParams.has('gcConversationId')) {
-  conversationId = urlParams.get('gcConversationID');
 }
 console.log('TESTING: Conversation ID: ', conversationId);
 
