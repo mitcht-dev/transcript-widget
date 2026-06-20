@@ -165,7 +165,7 @@ try {
 
     notificationsInstance.postNotificationsChannels()
       .then((data) => {
-        let { channelId: id, connectUri } = data;
+        let { id: channelId, connectUri } = data;
 
         console.log(`TESTING: postNotificationsChannels success! data: ${JSON.stringify(data, null, 2)}`);
 
