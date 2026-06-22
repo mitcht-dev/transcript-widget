@@ -5,11 +5,11 @@ body {
     font-family: monospace;
 }
 
-messageElement {
+.messageElement {
     margin-top: 1em;
 }
 
-sourceElement {
+.sourceElement {
     font-size: smaller;
     color: gray;
 
@@ -24,7 +24,7 @@ sourceElement {
     }
 }
 
-transcriptElement {
+.transcriptElement {
     .INTERNAL {
         margin-right: 0;
         margin-left: auto;
