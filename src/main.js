@@ -1,10 +1,12 @@
 import platformClient from 'purecloud-platform-client-v2';
 import ClientApp from 'purecloud-client-app-sdk';
 
+import './index.scss';
+
 const qConversationIdQueryParam = 'gcConversationId';
 
 const clientId = '85c16c77-dca7-4d60-b67a-6f09658aa043';
-const redirectUri = 'https://mitcht-dev.github.io/transcript-widget/';
+const redirectUri = 'https://mitcht-dev.github.io/transcript-widget/auth.html';
 const environment = 'usw2.pure.cloud';
 const TOKEN_KEY = 'genesys_transcript_tkn';
 
@@ -23,8 +25,7 @@ console.log('TESTING: Conversation ID: ', conversationId);
 
 let websocket;
 let pingInterval;
-
-let userName;
+let previousSource;
 
 try {
   const client = platformClient.ApiClient.instance;
@@ -77,6 +78,11 @@ try {
     const left = window.screenX + (window.outerWidth - popupWidth) / 2;
     const top = window.screenY + (window.outerHeight - popupHeight) / 2;
 
+    const popup = window.open('', 'GenesysAuth', `width=${popupWidth},height=${popupHeight},left=${left},top=${top}`);
+
+    pkceVerifier = client.generatePKCECodeVerifier(128);
+    const codeChallenge = await client.computePKCECodeChallenge(pkceVerifier);
+
     const authUrl = `https://login.${environment}/oauth/authorize?` +
       `client_id=${clientId}&` +
       `response_type=code&` +
@@ -86,12 +92,7 @@ try {
 
     console.log('TESTING: authUrl: ', authUrl);
 
-    const popup = window.open(authUrl, 'GenesysAuth', `width=${popupWidth},height=${popupHeight},left=${left},top=${top}`);
-
-    pkceVerifier = client.generatePKCECodeVerifier(128);
-    const codeChallenge = await client.computePKCECodeChallenge(pkceVerifier);
-
-    //popup.location.href = authUrl;
+    popup.location.href = authUrl;
 
     window.addEventListener('message', authListener);
   }
@@ -157,8 +158,7 @@ try {
 
     try {
       const me = await usersApi.getUsersMe();
-
-      userName = me.name;
+      console.log('TESTING: Username: ', me.name);
 
       document.getElementById('login').style.display = 'none';
       document.getElementById('conversationTranscript').style.display = '';
@@ -211,15 +211,51 @@ try {
   }
 
   function onWebsocketMessage(e) {
-    const message = extractTranscripts(e.data);
-    if (message) {
-      console.log(`TESTING: Websocket message ${message}`);
+    let messages;
+    try {
+      messages = JSON.parse(e.data)?.eventBody;
+    } catch {
+      messages = e.data?.eventBody;
+    }
+    messages = messages?.transcripts?.flatMap(t => ({
+      source: t.channel,
+      transcript: t.alternatives[0].transcript
+    }));
+    if (!messages) {
+      return;
     }
 
-    const newLine = document.createElement('p');
-    newLine.innerText = message;
+    messages.forEach(m => {
+      console.log(m);
 
-    document.getElementById('conversationTranscript').append(newLine);
+      let parentContainer = document.getElementById('conversationTranscript');
+      let previousContainer = parentContainer.lastElementChild;
+      let container;
+
+      if (m.source !== previousSource) {
+        container = document.createElement('div');
+        container.classList.add(m.source, 'messageElement');
+
+        const sourceElement = document.createElement('div');
+        sourceElement.classList.add(m.source, 'sourceElement');
+        sourceElement.innerText = m.source;
+        sourceElement.classList.add(m.source);
+        container.append(sourceElement);
+      } else {
+        container = previousContainer;
+      }
+
+      const transcriptElement = document.createElement('div');
+      transcriptElement.classList.add(m.source, 'transcriptElement');
+      transcriptElement.innerText = m.transcript;
+
+      container.append(transcriptElement);
+      parentContainer.append(container);
+
+      previousSource = m.source;
+
+      document.getElementById('bottom').scrollIntoView();
+    })
   }
 
   function onWebsocketError(e) {
@@ -229,17 +265,6 @@ try {
   function onWebsocketClose() {
     console.log(`TESTING: Websocket closed`);
     pingInterval.clear();
-  }
-
-  function extractTranscripts(data) {
-    let message;
-    try {
-      message = JSON.parse(data)?.eventBody;
-    } catch {
-      message = data?.eventBody;
-    }
-    return message?.transcripts?.flatMap(t => `${t.channel === 'internal' ? userName : t.channel}: ${t.alternatives[0].transcript}`)
-      .join('\n');
   }
 
   init();
